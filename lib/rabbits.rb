@@ -26,18 +26,50 @@ end
 if $0 == __FILE__
   require 'benchmark'
 
-  def fib(n)
-    fib_r 0, 1, n
+
+  # Loop
+  def lfib(n,k=1)
+    a,b = 1,0
+    (1..n).each do
+      a,b = a + k * b, a
+    end
+
+    b
   end
 
-  def fib_r(a, b, n)
-    n == 0 ? a : fib_r(b, a + b, n - 1)
+  # Memoize
+  $m = {}
+  def mfib(n, k)
+    $m.fetch([n,k]) {
+      if n <= 2
+        p = 1
+      else
+        p = mfib(n - 1, k) + k * mfib(n - 2, k)
+      end
+
+      $m[[n,k]] = p
+
+      p
+    }
   end
 
-  # Bench and find stack limit, it's 8,000 here.
+  # Efficient recursive
+  def rfib(n)
+    rfib_r 0, 1, n
+  end
+
+  def rfib_r(a, b, n)
+    n == 0 ? a : rfib_r(b, a + b, n - 1)
+  end
+
+  # TODO Combine efficient recursive and memoize
+
   Benchmark.bm do |x|
-    (1_000..9_000).step(1_000) do |n|
-      x.report("n #{n}") { fib n }
+    (1_000..20_000).step(1_000) do |n|
+      x.report("mfib #{n}") { mfib n, 3 }
+      x.report("lfib #{n}") { lfib n }
+      # Bench and find stack limit, it's 8,000 here.
+      # x.report("n #{n}") { fib n }
     end
   end
 
