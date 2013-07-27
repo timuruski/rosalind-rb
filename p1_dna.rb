@@ -4,6 +4,6 @@ require './lib/dna'
 
 ARGF.each_line do |line|
   # 'A', 'C', 'G', 'T'
-  h = DNA.to_h line.chomp
-  puts h.values.join(' ')
+  bases = DNA.new(line.chomp).bases
+  puts bases.values.join(' ')
 end
