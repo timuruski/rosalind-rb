@@ -1,57 +1,36 @@
+require 'forwardable'
+
 class Fasta
   include Enumerable
+  extend Forwardable
+
+  def_delegator :@data, :each
 
   def initialize(data)
-    @data = data
+    @data = build(data)
   end
 
-  def each
+  def build(data)
+    data.each_line.with_object([]) do |line, dnas|
+      line = line.chomp
+      if line[0] == '>'
+        dnas << FastaEntry.new(line.tr('>', ''))
+      else
+        dnas.last << line
+      end
+    end
   end
 end
 
-
-if $0 == __FILE__
-  class DNA
-    def initialize(name)
-      @name = name
-      @string = ''
-    end
-
-    attr_reader :name
-
-    def <<(value)
-      @string << String(value)
-    end
+class FastaEntry
+  def initialize(name)
+    @name = name
+    @dna = ''
   end
 
-  raw_data = DATA.read.each_line
-  dna = nil
+  attr_reader :name
 
-  dnas = raw_data.each_with_object [] do |line, dnas|
-    next if line == "\n"
-
-    if line[0] == '>'
-      dnas << dna = DNA.new(line.chomp)
-    else
-      dna << line.chomp
-    end
-
-    dna
+  def <<(value)
+    @dna << String(value)
   end
-
-  p dnas
 end
-
-
-__END__
-
-
->Rosalind_6404
-CCTGCGGAAGATCGGCACTAGAATAGCCAGAACCGTTTCTCTGAGGCTTCCGGCCTTCCC
-TCCCACTAATAATTCTGAGG
->Rosalind_5959
-CCATCGGTAGCGCATCCTTAGTCCAATTAAGTCCCTATCCAGGCGCTCCGCCGAAGGTCT
-ATATCCATTTGTCAGCAGACACGC
->Rosalind_0808
-CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGAC
-TGGGAACCTGCGGGCAGTAGGTGGAAT

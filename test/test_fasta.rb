@@ -25,4 +25,10 @@ TGGGAACCTGCGGGCAGTAGGTGGAAT
     assert_equal 3, entries.length
   end
 
+  test "assigns the correct name" do
+    exp = %w[Rosalind_6404 Rosalind_5959 Rosalind_0808]
+    names = @subject.map(&:name)
+    assert_equal exp, names
+  end
+
 end
