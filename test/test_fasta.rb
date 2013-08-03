@@ -31,4 +31,15 @@ TGGGAACCTGCGGGCAGTAGGTGGAAT
     assert_equal exp, names
   end
 
+  test "entries have gc content" do
+    entry = FastaEntry.new('test')
+    entry << 'ACGT'
+    assert_equal 0.50, entry.gc
+  end
+
+  test "finding entry with largest GC content" do
+    largest = @subject.max_gc
+    assert_equal 'Rosalind_0808', largest.name
+  end
+
 end
