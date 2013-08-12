@@ -9,11 +9,9 @@ class Phenotype
   end
 
   def dominant_expression
-    COMBINATIONS.map { |x, y|
-      expression_probability(x, y)
-    }.reduce(0, &:+)
-
-    0.78333
+    COMBINATIONS
+      .map { |x, y| expression_probability(x, y) }
+      .reduce(0, &:+)
   end
 
   def mating_probability(x, y)
@@ -31,8 +29,13 @@ class Phenotype
 
   def self.expression(x, y)
     case [x,y]
-    when [:k,:k]
+    when [:k,:k], [:k,:m], [:k,:n],
+                  [:m,:k], [:n,:k]
       [1.0, 0.0]
+    when [:k,:k], [:k,:m], [:k,:n]
+      [1.0, 0.0]
+    when [:m,:m]
+      [0.75, 0.25]
     when [:n,:n]
       [0.0, 1.0]
     else
