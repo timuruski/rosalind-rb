@@ -17,6 +17,8 @@ class Fasta
   def build(data)
     data.each_line.with_object([]) do |line, dnas|
       line = line.chomp
+      next if line.empty?
+
       if line[0] == '>'
         dnas << FastaEntry.new(line.tr('>', ''))
       else
