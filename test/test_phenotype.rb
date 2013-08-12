@@ -13,13 +13,22 @@ class TestPhenotype < Test::Unit::TestCase
   describe "Phenotype#mating_probability" do
     test "it can calculate of two types mating" do
       subject = Phenotype.new(2, 2, 2)
-      probability = 8.0 / 15.0
+      probability = 1.0 / 15.0
 
       assert_equal probability, subject.mating_probability(:k, :k)
     end
   end
 
-  describe "Phenotype#expression" do
+  describe "Phenotype#expression_probability" do
+    test "it combines the mating probability and expression" do
+      subject = Phenotype.new(2, 2, 2)
+      probability = 1.0 / 15.0
+
+      assert_equal probability, subject.expression_probability(:k, :k)
+    end
+  end
+
+  describe "Phenotype.expression" do
     test "it returns the correct expressions" do
       assert_equal [1.0, 0.0], Phenotype.expression(:k,:k)
       assert_equal [0.5, 0.5], Phenotype.expression(:k,:m)
